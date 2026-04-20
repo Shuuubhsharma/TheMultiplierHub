@@ -1,7 +1,7 @@
 // CUSTOMIZE: Replace these EmailJS values with your own account settings.
 const EMAILJS_PUBLIC_KEY = "B4OhUZPZYQPznAc0G";
-const EMAILJS_SERVICE_ID = "service_6nosgxa";
-const EMAILJS_TEMPLATE_ID = "template_jkhvtfl";
+const EMAILJS_SERVICE_ID = "6nosgxa";
+const EMAILJS_TEMPLATE_ID = "jkhvtfl";
 
 function hasPlaceholderConfig() {
   return (
