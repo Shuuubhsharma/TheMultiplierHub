@@ -1,14 +1,12 @@
-// CUSTOMIZE: Replace these EmailJS values with your own account settings.
 const EMAILJS_PUBLIC_KEY = "B4OhUZPZYQPznAc0G";
-const EMAILJS_SERVICE_ID = "6nosgxa";
-const EMAILJS_TEMPLATE_ID = "jkhvtfl";
+const EMAILJS_SERVICE_ID = "service_6nosgxa";
+const EMAILJS_TEMPLATE_ID = "template_jkhvtfl";
 
 function hasPlaceholderConfig() {
   return (
-    !EMAILJS_PUBLIC_KEY === "B4OhUZPZYQPznAc0G"||
-    EMAILJS_PUBLIC_KEY === "B4OhUZPZYQPznAc0G" ||
-    !EMAILJS_SERVICE_ID === "service_6nosgxa" ||
-    !EMAILJS_TEMPLATE_ID === "template_jkhvtfl"
+    EMAILJS_PUBLIC_KEY === "YOUR_PUBLIC_KEY" ||
+    EMAILJS_SERVICE_ID === "YOUR_SERVICE_ID" ||
+    EMAILJS_TEMPLATE_ID === "YOUR_TEMPLATE_ID"
   );
 }
 
@@ -16,17 +14,13 @@ function showFormMessage(message, tone) {
   formMessage.textContent = message;
   formMessage.classList.remove('hidden');
   formMessage.classList.remove(
-    'border-emerald-500/70',
-    'bg-emerald-500/15',
-    'border-rose-500/70',
-    'bg-rose-500/10'
+    'border-emerald-500/70', 'bg-emerald-500/15',
+    'border-rose-500/70', 'bg-rose-500/10'
   );
-
   if (tone === 'success') {
     formMessage.classList.add('border-emerald-500/70', 'bg-emerald-500/15');
     return;
   }
-
   formMessage.classList.add('border-rose-500/70', 'bg-rose-500/10');
 }
 
@@ -34,7 +28,7 @@ const form = document.getElementById('lead-form');
 const formMessage = document.getElementById('form-message');
 
 if (window.emailjs && !hasPlaceholderConfig()) {
-  emailjs.init(B4OhUZPZYQPznAc0G);
+  emailjs.init(EMAILJS_PUBLIC_KEY);  // ✅ pass the variable, not a bare word
 }
 
 form.addEventListener('submit', function (event) {
@@ -55,29 +49,28 @@ form.addEventListener('submit', function (event) {
     requirement: form.requirement.value.trim(),
   };
 
-  // ACTION: EMAIL_FORM_SETUP
   if (!window.emailjs) {
     showFormMessage('Email service failed to load. Please reload the page and try again.', 'error');
     return;
   }
 
   if (hasPlaceholderConfig()) {
-    showFormMessage('Form setup is incomplete. Add your EmailJS public key in script.js before using this form.', 'error');
+    showFormMessage('Form setup is incomplete. Add your EmailJS credentials in script.js.', 'error');
     return;
   }
 
-  emailjs.send( 6nosgxa, jkhvtfl, templateParams)
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)  // ✅ use variables
     .then(function () {
-      showFormMessage('Thank you! Our team will call you within 24 hours with personalized offer.', 'success');
+      showFormMessage('Thank you! Our team will call you within 24 hours with a personalized offer.', 'success');
       form.reset();
     })
     .catch(function (error) {
-      showFormMessage('Unable to send your request right now. Please check your EmailJS settings or try again later.', 'error');
+      showFormMessage('Unable to send your request right now. Please try again later.', 'error');
       console.error('EmailJS submission error:', error);
     });
 });
 
-// Simple slideshow for service photos and video
+// Slideshow
 (function () {
   const slides = Array.from(document.querySelectorAll('.slide'));
   const indicators = Array.from(document.querySelectorAll('.slide-indicator'));
@@ -86,30 +79,17 @@ form.addEventListener('submit', function (event) {
   let currentIndex = 0;
 
   function showSlide(index) {
-    slides.forEach((slide, slideIndex) => {
-      slide.classList.toggle('hidden', slideIndex !== index);
-    });
-    indicators.forEach((indicator, indicatorIndex) => {
-      indicator.classList.toggle('bg-amber-500/90', indicatorIndex === index);
-      indicator.classList.toggle('bg-amber-500/20', indicatorIndex !== index);
+    slides.forEach((slide, i) => slide.classList.toggle('hidden', i !== index));
+    indicators.forEach((ind, i) => {
+      ind.classList.toggle('bg-amber-500/90', i === index);
+      ind.classList.toggle('bg-amber-500/20', i !== index);
     });
     currentIndex = index;
   }
 
-  prevButton.addEventListener('click', () => {
-    showSlide((currentIndex - 1 + slides.length) % slides.length);
-  });
-
-  nextButton.addEventListener('click', () => {
-    showSlide((currentIndex + 1) % slides.length);
-  });
-
-  indicators.forEach((indicator) => {
-    indicator.addEventListener('click', () => {
-      const index = Number(indicator.dataset.index);
-      showSlide(index);
-    });
-  });
+  prevButton.addEventListener('click', () => showSlide((currentIndex - 1 + slides.length) % slides.length));
+  nextButton.addEventListener('click', () => showSlide((currentIndex + 1) % slides.length));
+  indicators.forEach(ind => ind.addEventListener('click', () => showSlide(Number(ind.dataset.index))));
 
   showSlide(0);
 })();
