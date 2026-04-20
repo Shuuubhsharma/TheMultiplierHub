@@ -5,7 +5,7 @@ const EMAILJS_TEMPLATE_ID = "template_jkhvtfl";
 
 function hasPlaceholderConfig() {
   return (
-    !EMAILJS_PUBLIC_KEY ||
+    !EMAILJS_PUBLIC_KEY === "B4OhUZPZYQPznAc0G"||
     EMAILJS_PUBLIC_KEY === "B4OhUZPZYQPznAc0G" ||
     !EMAILJS_SERVICE_ID === "service_6nosgxa" ||
     !EMAILJS_TEMPLATE_ID === "template_jkhvtfl"
