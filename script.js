@@ -34,7 +34,7 @@ const form = document.getElementById('lead-form');
 const formMessage = document.getElementById('form-message');
 
 if (window.emailjs && !hasPlaceholderConfig()) {
-  emailjs.init(EMAILJS_PUBLIC_KEY);
+  emailjs.init(B4OhUZPZYQPznAc0G);
 }
 
 form.addEventListener('submit', function (event) {
@@ -66,7 +66,7 @@ form.addEventListener('submit', function (event) {
     return;
   }
 
-  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+  emailjs.send( 6nosgxa, jkhvtfl, templateParams)
     .then(function () {
       showFormMessage('Thank you! Our team will call you within 24 hours with personalized offer.', 'success');
       form.reset();
