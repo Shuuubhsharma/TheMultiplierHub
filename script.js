@@ -1,27 +1,45 @@
-/* Initialize EmailJS with your user ID */
-(function () { 
-  // Replace this with your EmailJS user ID from https://www.emailjs.com/admin
-  emailjs.init("B4OhUZPZYQPznAc0G");
-})();
+// CUSTOMIZE: Replace these EmailJS values with your own account settings.
+const EMAILJS_PUBLIC_KEY = "B4OhUZPZYQPznAc0G";
+const EMAILJS_SERVICE_ID = "service_6nosgxa";
+const EMAILJS_TEMPLATE_ID = "template_jkhvtfl";
+
+function hasPlaceholderConfig() {
+  return (
+    !EMAILJS_PUBLIC_KEY ||
+    EMAILJS_PUBLIC_KEY === "B4OhUZPZYQPznAc0G" ||
+    !EMAILJS_SERVICE_ID === "service_6nosgxa" ||
+    !EMAILJS_TEMPLATE_ID === "template_jkhvtfl"
+  );
+}
+
+function showFormMessage(message, tone) {
+  formMessage.textContent = message;
+  formMessage.classList.remove('hidden');
+  formMessage.classList.remove(
+    'border-emerald-500/70',
+    'bg-emerald-500/15',
+    'border-rose-500/70',
+    'bg-rose-500/10'
+  );
+
+  if (tone === 'success') {
+    formMessage.classList.add('border-emerald-500/70', 'bg-emerald-500/15');
+    return;
+  }
+
+  formMessage.classList.add('border-rose-500/70', 'bg-rose-500/10');
+}
 
 const form = document.getElementById('lead-form');
-const serviceError = document.getElementById('service-error');
 const formMessage = document.getElementById('form-message');
+
+if (window.emailjs && !hasPlaceholderConfig()) {
+  emailjs.init(EMAILJS_PUBLIC_KEY);
+}
 
 form.addEventListener('submit', function (event) {
   event.preventDefault();
-  serviceError.classList.add('hidden');
   formMessage.classList.add('hidden');
-
-  const selectedServices = Array.from(form.querySelectorAll('input[name="services"]'))
-    .filter((input) => input.checked)
-    .map((input) => input.value);
-
-  if (selectedServices.length === 0) {
-    serviceError.classList.remove('hidden');
-    serviceError.textContent = 'Select at least one service to proceed.';
-    return;
-  }
 
   if (!form.checkValidity()) {
     form.reportValidity();
@@ -34,28 +52,27 @@ form.addEventListener('submit', function (event) {
     whatsapp: form.whatsapp.checked ? 'Yes' : 'No',
     email: form.email.value.trim(),
     location: form.location.value.trim(),
-    profession: form.profession.value,
-    services: selectedServices.join(', '),
     requirement: form.requirement.value.trim(),
-    callTime: form.callTime.value,
-    budget: form.budget.value.trim(),
-    challenge: form.challenge.value.trim(),
   };
 
-  const serviceId = "service_v3r5ndm";
-  const templateId = "template_jkhvtfl";
+  // ACTION: EMAIL_FORM_SETUP
+  if (!window.emailjs) {
+    showFormMessage('Email service failed to load. Please reload the page and try again.', 'error');
+    return;
+  }
 
-  emailjs.send(serviceId, templateId, templateParams)
+  if (hasPlaceholderConfig()) {
+    showFormMessage('Form setup is incomplete. Add your EmailJS public key in script.js before using this form.', 'error');
+    return;
+  }
+
+  emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
     .then(function () {
-      formMessage.textContent = 'Thank you! Our team will call you within 24 hours with personalized offer.';
-      formMessage.classList.remove('hidden');
-      formMessage.classList.add('border-emerald-500/70', 'bg-emerald-500/15');
+      showFormMessage('Thank you! Our team will call you within 24 hours with personalized offer.', 'success');
       form.reset();
     })
     .catch(function (error) {
-      formMessage.textContent = 'Unable to send your request right now. Please check your EmailJS settings or try again later.';
-      formMessage.classList.remove('hidden');
-      formMessage.classList.add('border-rose-500/70', 'bg-rose-500/10');
+      showFormMessage('Unable to send your request right now. Please check your EmailJS settings or try again later.', 'error');
       console.error('EmailJS submission error:', error);
     });
 });
